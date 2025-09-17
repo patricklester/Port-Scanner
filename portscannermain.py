@@ -39,3 +39,5 @@ end = int(input("Enter ending port #: "))
 for port in range(start, end + 1):
     if port_check(target, port):
         print(f"Port: {port}, OPEN")
+    else:
+        print(f"Port: {port}, CLOSED")

@@ -24,6 +24,10 @@ def port_check(host, port):
     sock.settimeout(.5)#Gives up after one second
     result = sock.connect_ex((host, port)) #connect_ex is what is trying to connect to host and port
     sock.close() #closes the socket
+    if result == 0:
+        print(f"Port: {port}, OPEN")
+    else:
+        print(f"Port: {port}, CLOSED")
 
     return result == 0
 def main():
@@ -31,15 +35,7 @@ def main():
     start = int(input("Enter starting port #: "))
     end = int(input("Enter ending port #: "))
 
-    for port in range(start, end + 1):
-        if port_check(target, port):
-            print(f"Port: {port}, OPEN")
-        else:
-            print(f"Port: {port}, CLOSED")
-
-    thread_scanner(target, start, end)
+    thread_scanner(target, start, end + 1)
 
 if __name__ == "__main__":
     main()
-
-#Commit for recomitt

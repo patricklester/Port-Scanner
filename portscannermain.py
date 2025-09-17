@@ -3,22 +3,17 @@
 #Only used to scan my own machine
 
 import socket
-"""
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP
-sock.settimeout(1) 
-result = sock.connect_ex(("127.0.0.1", 80)) #Local host, checking port 80
-sock.close()
+import threading
 
-#--------------------- Code 1 ----------------------
 
-##Print:
-
-if result == 0:
-    print("Port 80 is open")
-else:
-    print("Port 80 is closed")
-                                        """
-
+def thread_scanner(host, start, end):
+    threads = [] #list for all of the threads
+    for port in range(start, end):
+        t = threading.Thread(target=port_check, args=(host, port))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
 
 def port_check(host, port):
     """Function to check openness on a port"""
@@ -28,16 +23,21 @@ def port_check(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(.5)#Gives up after one second
     result = sock.connect_ex((host, port)) #connect_ex is what is trying to connect to host and port
-    sock.close #closes the socket
+    sock.close() #closes the socket
 
     return result == 0
+def main():
+    target = input("Enter IP: ")
+    start = int(input("Enter starting port #: "))
+    end = int(input("Enter ending port #: "))
 
-target = input("Enter IP: ")
-start = int(input("Enter starting port #: "))
-end = int(input("Enter ending port #: "))
+    for port in range(start, end + 1):
+        if port_check(target, port):
+            print(f"Port: {port}, OPEN")
+        else:
+            print(f"Port: {port}, CLOSED")
 
-for port in range(start, end + 1):
-    if port_check(target, port):
-        print(f"Port: {port}, OPEN")
-    else:
-        print(f"Port: {port}, CLOSED")
+    thread_scanner(target, start, end)
+
+if __name__ == "__main__":
+    main()
